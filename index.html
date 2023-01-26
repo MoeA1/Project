@@ -35,14 +35,16 @@
             preview.src = reader.result;
             cropper = new Cropper(preview, {
   ready: function () {
+    
     cropper.setCropBoxData({
-      width: 600,
-      height: 848,
+      width: 412,
+      height: 516,
     });
   },
-  dragMode: "none",
+  dragMode: "move",
   cropBoxResizable: false
 });
+
 
           }
         };
@@ -61,8 +63,8 @@
     </script>
     <style>
 .image-editor {
-    width: 90%;
-    height: 70%;
+    width: 412px;
+    height: 516px;
 }
     </style>
   </body>
