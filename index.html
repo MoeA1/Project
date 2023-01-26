@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Image Cropper</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.min.css" />
+  </head>
+  <body>
+
+    
+
+    <input type="file" id="image-file" onchange="previewImage()"/>
+
+    <div class="image-editor">
+        <img id="preview" src="" alt="Image Preview"/>
+    </div>
+    
+    <button onclick="cropImage()">Crop Image</button>
+    <img id="cropped-image" src="" alt="Cropped Image"/>
+
+
+
+    <script>
+      var cropper;
+
+      function previewImage() {
+        var input = document.getElementById('image-file');
+        var preview = document.getElementById('preview');
+
+        var reader = new FileReader();
+        reader.onload = function() {
+          var image = new Image();
+          image.src = reader.result;
+          image.onload = function(){
+            preview.src = reader.result;
+            cropper = new Cropper(preview, {
+  ready: function () {
+    cropper.setCropBoxData({
+      width: 600,
+      height: 848,
+    });
+  },
+  dragMode: "none",
+  cropBoxResizable: false
+});
+
+          }
+        };
+
+        if (input.files && input.files[0]) {
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+
+      function cropImage() {
+        if(cropper) {
+          var croppedImage = cropper.getCroppedCanvas().toDataURL();
+          document.getElementById('cropped-image').src = croppedImage;
+        }
+      }
+    </script>
+    <style>
+.image-editor {
+    width: 50%;
+    height: auto;
+}
+    </style>
+  </body>
+</html>
