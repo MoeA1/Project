@@ -7,65 +7,167 @@
   </head>
   <body>
 
-    
-
-    <input type="file" id="image-file" onchange="previewImage()"/>
+    <label for="image-file" class="image-file-button"> Choose a picture...
+        <input type="file" id="image-file" onchange="previewImage()"/>
+    </label>
 
     <div class="image-editor">
-        <img id="preview" src="" alt="Image Preview"/>
+        <img id="preview" src="" alt=""/>
     </div>
-    
-    <button onclick="cropImage()">Crop Image</button>
-    <img id="cropped-image" src="" alt="Cropped Image"/>
+    <button id="crop-button" onclick="cropImage()">Crop Image</button>
 
+    <div class="image-viewer">
+        <img id="cropped-image" src="" alt=""/>
+    </div>
 
+    <a href="#" id="download" download>Download Image</a>
 
     <script>
+        document.getElementById("download").style.display = "none";
+        document.querySelector('.image-viewer').style.display = "none";
+        document.querySelector('.image-editor').style.display = "none";
+        document.getElementById("crop-button").style.display = "none";
+
       var cropper;
 
-      function previewImage() {
-        var input = document.getElementById('image-file');
-        var preview = document.getElementById('preview');
+function previewImage() {
+    document.getElementById("download").style.display = "none";
+    document.querySelector('.image-viewer').style.display = "none";
+    document.querySelector('.image-editor').style.display = "flex";
+    document.getElementById("crop-button").style.display = "flex";
+  var input = document.getElementById('image-file');
+  var preview = document.getElementById('preview');
+  document.querySelector('.image-editor').style.display = "flex";
+  // Clear the previous cropped image
+  document.getElementById('cropped-image').src = '';
+  // check if the cropper object exists, destroy it if it does
+  if (cropper) {
+      cropper.destroy();
+  }
 
-        var reader = new FileReader();
-        reader.onload = function() {
-          var image = new Image();
-          image.src = reader.result;
-          image.onload = function(){
-            preview.src = reader.result;
-            cropper = new Cropper(preview, {
-  ready: function () {
-    
-    cropper.setCropBoxData({
-      width: 412,
-      height: 516,
-    });
-  },
-  dragMode: "move",
-  cropBoxResizable: false
-});
+  var reader = new FileReader();
+  reader.onload = function() {
+    var image = new Image();
+    image.src = reader.result;
+    image.onload = function(){
+      preview.src = reader.result;
+      cropper = new Cropper(preview, {
+        ready: function () {
+          cropper.setCropBoxData({
+            width: 412,
+            height: 516,
+          });
+        },
+        dragMode: "move",
+        cropBoxResizable: false
+      });
+    }
+  };
 
-
-          }
-        };
-
-        if (input.files && input.files[0]) {
-          reader.readAsDataURL(input.files[0]);
-        }
-      }
-
-      function cropImage() {
-        if(cropper) {
-          var croppedImage = cropper.getCroppedCanvas().toDataURL();
-          document.getElementById('cropped-image').src = croppedImage;
-        }
-      }
-    </script>
-    <style>
-.image-editor {
-    width: 412px;
-    height: 516px;
+  if (input.files && input.files[0]) {
+    reader.readAsDataURL(input.files[0]);
+  }
 }
+
+function cropImage() {
+  if(cropper) {
+    var croppedImage = cropper.getCroppedCanvas().toDataURL();
+    document.getElementById('cropped-image').src = croppedImage;
+    document.getElementById("download").style.display = "block";
+    document.querySelector('.image-viewer').style.display = "flex";
+    document.querySelector('.image-editor').style.display = "none";
+    document.getElementById("crop-button").style.display = "none";
+    downloadCroppedImage();
+  }
+}
+
+function downloadCroppedImage() {
+    var download = document.getElementById("download");
+    var image = document.getElementById("cropped-image").src;
+    download.href = image;
+}
+
+
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            font-family: sans-serif;
+        }
+
+        .image-editor {
+            width: 412px;
+            height: 516px;
+            box-shadow: 0 0 15px black;
+        }
+        .image-viewer {
+            width: 412px;
+            height: 516px;
+            box-shadow: 0 0 15px black;
+        }
+        .name {
+            margin: 0 0 25px 0;
+            padding: 1rem .8rem;
+            font-size: larger;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .image-file-button {
+            display: block;
+            width: 10%;
+            text-align: center;
+            margin: 20px auto;
+            font-size: 1.2rem;
+            background-color: #4e87f0;
+            cursor: pointer;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 1.7rem 3.5rem;
+        }
+        
+        #crop-button {
+            display: block;
+            text-align: center;
+            margin: 20px auto;
+            color: white;
+            background-color: #4e87f0;
+            border-radius: 10px;
+            border: 0;
+            font-size: 1.2rem;
+            padding: 10px 50px 10px 50px;
+            cursor: pointer;
+            text-decoration: dashed;
+        }
+        
+        #download {
+            display: block;
+            width: 10%;
+            margin: 20px auto;
+            text-align: center;
+            font-size: 1.2rem;
+            padding: 10px;
+            cursor: pointer;
+            color: white;
+            background-color: #4e87f0;
+            border-radius: 10px;
+            border: 0;
+            text-decoration: none;
+        }
+        
+        .image-viewer {
+            margin: auto;
+        }
+        
+        .image-editor {
+            margin: auto;
+        }
+
     </style>
+
   </body>
 </html>
